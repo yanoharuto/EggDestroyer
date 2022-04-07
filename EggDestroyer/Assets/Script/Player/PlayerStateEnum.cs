@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerStateEnum : MonoBehaviour
 {
-    enum PlayerState
+    public enum PlayerState
     {
         Idol,//待機
         rise,//上昇
