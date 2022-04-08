@@ -12,17 +12,23 @@ public class Player : MonoBehaviour
     private bool mIsKeepRise;//上昇し続ける？
     private Rigidbody mRigidbody;
     private PlayerStateEnum.PlayerState mPlayerState;
-    
-
     /// 上昇
-    private void Rise()
+    private float Rise()
     {
-        Vector3 RiseVel;//上昇速度
         mPlayerState = PlayerStateEnum.PlayerState.rise;
         mRiseA *= mRiseCoefficient;//適当加速度
-        RiseVel = new Vector3(transform.position.x, mRiseA, transform.position.z);   
-        transform.position += RiseVel;
+        return mRiseA;
     }
+    //移動
+    private void Move()
+    {
+        float x = Input.GetAxis("Horizontal") * mSpeed * Time.deltaTime;
+        float z = Input.GetAxis("Vertical") * mSpeed * Time.deltaTime;
+        float y = Rise();
+        Vector3 v = new Vector3(x, y, z);
+        transform.position += v;
+    }    
+
     //発射準備
     private void PrepareRise()
     {
@@ -37,38 +43,20 @@ public class Player : MonoBehaviour
         mRigidbody = GetComponent<Rigidbody>();
     }
     private void Update()
-    { 
-
+    {
         if (!(mPlayerState == PlayerStateEnum.PlayerState.Descent)) 
         {
             if (Input.GetKey(KeyCode.Space))
             {
                 mIsKeepRise = true;
-                Rise();
-                Vector3 vector3 = new Vector3(0, 0, 0);
-                if (Input.GetKeyDown(KeyCode.RightArrow))
-                {
-                    vector3 = new Vector3(0.01f, 0, 0);
-                }
-                else if(Input.GetKeyDown(KeyCode.LeftArrow))
-                {
-                    vector3 = new Vector3(-0.01f, 0, 0);
-                }
-                if (Input.GetKeyDown(KeyCode.UpArrow))
-                {
-                    vector3=new Vector3(0,0,0.01f);
-                }
-                else if( Input.GetKeyDown(KeyCode.DownArrow))
-                {
-                    vector3 = new Vector3(0, 0, -0.01f);
-                }
-                transform.position += vector3;
-
+                mRigidbody.useGravity = false;
+                Move();
             }
             else if (mIsKeepRise == true)//スペースキーを離したら落下
             {
                 mPlayerState = PlayerStateEnum.PlayerState.Descent;
                 mIsKeepRise = false;
+                mRigidbody.useGravity = true;
             }
         }
     }
