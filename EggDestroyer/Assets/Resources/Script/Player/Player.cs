@@ -29,13 +29,13 @@ public class Player : MonoBehaviour
     }
     private float Deceleration(float _speed)
     {
-        if (mNowMoveA > mFirstMoveSpeed)//最初の速さより大きい？
+        if (mNowMoveA > 0)//最初の速さより大きい？
         {
             mNowMoveA *= mMoveD;//減速
         }
         else
         {
-            mNowMoveA = mFirstMoveSpeed;
+            mNowMoveA = 0;
         }
         if (_speed > 0)
         {
@@ -81,34 +81,15 @@ public class Player : MonoBehaviour
         float y = 0;
         Vector3 mMoveVel;
         if (mPlayerState == PlayerStateEnum.PlayerState.rise) y = Rise();
-        if(mIsInput)
+        if (mIsInput)
         {
             acceleration();
-            if ((mMoveX > 0 && 0 < Input.GetAxis("Horizontal")) ||
-                (mMoveX < 0 && 0 > Input.GetAxis("Horizontal")))
-            {
-                mMoveX = Deceleration(mMoveX);
-                Debug.Log("turn");
-            }
-            else
-            {
-                mMoveX = Input.GetAxis("Horizontal") * mNowMoveA;
-
-            }
-            if ((mMoveZ > 0 && 0 < Input.GetAxis("Vertical")) ||
-                (Input.GetAxis("Vertical") > 0 && 0 < mMoveZ))
-            {
-                mMoveZ = Deceleration(mMoveZ);
-                
-                Debug.Log("turn");
-            }
-            else
-            {
-
-                mMoveZ = Input.GetAxis("Vertical") * mNowMoveA;
-            }
+            mMoveX = Input.GetAxis("Horizontal") * mNowMoveA;
+            mMoveZ = Input.GetAxis("Vertical") * mNowMoveA;
+            Debug.Log(mMoveX);
+            Debug.Log(mMoveZ);
         }
-        else 
+        else
         {
             mMoveX = Deceleration(mMoveX);
             mMoveZ = Deceleration(mMoveZ);
@@ -124,6 +105,9 @@ public class Player : MonoBehaviour
         mPlayerState = PlayerStateEnum.PlayerState.Idol;//発射準備状態
         mNowRiseA = mFirstRiseSpeed;//加速度を元に戻す
         mNowMoveA = mFirstMoveSpeed;
+        mMoveX = 0;
+        mMoveZ = 0;
+
         mIsInput = false;
     }
     private void Start()
