@@ -5,13 +5,14 @@ using UnityEngine;
 public class Egg : MonoBehaviour
 {
     [SerializeField] private List<AudioClip> mBeforeBreakAudio = new List<AudioClip>();
-    [SerializeField, Range(0.1f, 1.0f)] private float mBreakAllowableLimit;
+    [SerializeField] private float mBreakAllowableLimit;
     [SerializeField] private int mClackedLayer;
+
     private AudioSource mAudioSource;
     
     private Rigidbody mRigidbody;
     private bool mIsClacked;
-
+    private AudioClip mBllowOffAudio;
     /// <summary>
     /// 音を鳴らします
     /// </summary>
@@ -36,6 +37,7 @@ public class Egg : MonoBehaviour
         mRigidbody = GetComponent<Rigidbody>();
         mAudioSource = GetComponent<AudioSource>();
         mIsClacked = false;
+        mBllowOffAudio = (AudioClip)Resources.Load("Audio/Paper");
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -48,8 +50,9 @@ public class Egg : MonoBehaviour
                 !mIsClacked) //ど真ん中にプレイヤーが落ちたら
             {
                 Clack();
-
-
+            }
+            {
+                AudioPlay(mBllowOffAudio);
             }
         }
     }

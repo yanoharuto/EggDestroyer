@@ -763,7 +763,7 @@ Transform:
   m_GameObject: {fileID: 1331322086}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 22, y: 1, z: 22}
+  m_LocalScale: {x: 2000, y: 1, z: 2000}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -799,7 +799,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1335972097
 Transform:
   m_ObjectHideFlags: 0
@@ -828,6 +828,18 @@ PrefabInstance:
     - target: {fileID: 40225513906058309, guid: 59e0650dc55af854280b38ecdfde0391, type: 3}
       propertyPath: m_Name
       value: player
+      objectReference: {fileID: 0}
+    - target: {fileID: 40225513906058318, guid: 59e0650dc55af854280b38ecdfde0391, type: 3}
+      propertyPath: mMoveA
+      value: 1.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 40225513906058318, guid: 59e0650dc55af854280b38ecdfde0391, type: 3}
+      propertyPath: mMaxMoveSpeed
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 40225513906058318, guid: 59e0650dc55af854280b38ecdfde0391, type: 3}
+      propertyPath: mFirstRiseSpeed
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 40225513906058319, guid: 59e0650dc55af854280b38ecdfde0391, type: 3}
       propertyPath: m_RootOrder
@@ -882,6 +894,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 64207766829577121, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
+      propertyPath: m_AngularDrag
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 64207766829577123, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
       propertyPath: m_Name
       value: Egg 1
@@ -935,21 +951,25 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 64207766829577150, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
+      propertyPath: mBlowOffSpeed
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 64207766829577150, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
       propertyPath: mClackedLayer
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 64207766829577150, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
       propertyPath: mBreakAllowableLimit
-      value: 0.45
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 64207766829577150, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
       propertyPath: mBeforeBreakAudio.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 64207766829577150, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
       propertyPath: mBeforeBreakAudio.Array.data[1]
       value: 
-      objectReference: {fileID: 8300000, guid: 3a4cfa208b16d1849bd17b84201fe936, type: 3}
+      objectReference: {fileID: 8300000, guid: b2ecabf713dfef7429e52463b69e8cda, type: 3}
     - target: {fileID: 64207766829577150, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
       propertyPath: mBeforeBreakAudio.Array.data[2]
       value: 
