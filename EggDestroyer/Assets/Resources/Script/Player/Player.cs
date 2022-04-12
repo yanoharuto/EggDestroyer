@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     private bool mIsInput;//動いてる？
     private Rigidbody mRigidbody;
     private PlayerStateEnum.PlayerState mPlayerState;
+    private string mInputName;
     /// 上昇
     private float Rise()
     {
@@ -27,6 +28,11 @@ public class Player : MonoBehaviour
         mNowRiseA *= mRiseD;//適当減速
         return mNowRiseA;
     }
+    /// <summary>
+    /// 減速する
+    /// </summary>
+    /// <param name="_speed"></param>
+    /// <returns></returns>
     private float Deceleration(float _speed)
     {
         if (mNowMoveA > 0)//最初の速さより大きい？
@@ -58,43 +64,63 @@ public class Player : MonoBehaviour
             mNowMoveA = mMaxMoveSpeed;
         }
     }
+    private string InputKey(string _InputName)
+    {
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            _InputName = KeyCode.DownArrow.ToString();
+        }
+        else if (Input.GetKey(KeyCode.UpArrow))
+        {
+            _InputName = KeyCode.UpArrow.ToString();
+            
+        }
+        else if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            _InputName = KeyCode.LeftArrow.ToString();
+            
+        }
+        else if (Input.GetKey(KeyCode.RightArrow))
+        {
+            _InputName = KeyCode.RightArrow.ToString();
+            
+        }
+        else
+        {
+            _InputName = null;
+        }
+        return _InputName;
+    }
     //移動
     private void Move()
     {
-
-        if (mPlayerState == PlayerStateEnum.PlayerState.rise)
-        {
-            if (Input.GetKey(KeyCode.DownArrow) ||
-                Input.GetKey(KeyCode.UpArrow) ||
-                Input.GetKey(KeyCode.LeftArrow) ||
-                Input.GetKey(KeyCode.RightArrow))
-            {
-                mIsInput = true;
-            }
-            else//何も入力してないなら減速
-            {
-
-                mIsInput = false;
-            }
-        }
-       
+        string NowInputName = null;
+        NowInputName = InputKey(NowInputName);
         float y = 0;
         Vector3 mMoveVel;
-        if (mPlayerState == PlayerStateEnum.PlayerState.rise) y = Rise();
-        if (mIsInput)
+        if (mNowMoveA <= mFirstMoveSpeed  && NowInputName != null)
+        {
+
+            mInputName = NowInputName;
+            
+        }
+        if (NowInputName == mInputName && mPlayerState == PlayerStateEnum.PlayerState.rise)
         {
             acceleration();
             mMoveX = Input.GetAxis("Horizontal") * mNowMoveA;
             mMoveZ = Input.GetAxis("Vertical") * mNowMoveA;
-            Debug.Log(mMoveX);
-            Debug.Log(mMoveZ);
         }
         else
         {
             mMoveX = Deceleration(mMoveX);
             mMoveZ = Deceleration(mMoveZ);
-
         }
+
+        if (mPlayerState == PlayerStateEnum.PlayerState.rise)
+        {
+            y = Rise();
+        }
+
         mMoveVel = new Vector3(mMoveX, y, mMoveZ);
 
         transform.position += mMoveVel * Time.deltaTime;
@@ -107,7 +133,7 @@ public class Player : MonoBehaviour
         mNowMoveA = mFirstMoveSpeed;
         mMoveX = 0;
         mMoveZ = 0;
-
+        mInputName = null;
         mIsInput = false;
     }
     private void Start()
