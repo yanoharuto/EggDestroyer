@@ -9,13 +9,14 @@ public class Egg : MonoBehaviour
     [SerializeField] private float mFistBlowOffSpeed;
     [SerializeField] private float mMaxBlowOffSpeed;
     [SerializeField,Range(0.6f,1.0f)] private float mBlowOffD;//減速量
-    [SerializeField] private int mClackedLayer;
+    [SerializeField] private int mClackedLayer;//割れた後のレイヤーの番号
 
     private AudioSource mAudioSource;
     private AudioClip mBllowOffAudio;
     private Rigidbody mRigidbody;
     private bool mIsClacked;
     private float mBlowOffSpeed;
+    private float mBlowOffX, mBlowOffZ;
     [SerializeField]private Vector3 mBlowOffForce;
     /// <summary>
     /// 音を鳴らします
@@ -40,29 +41,32 @@ public class Egg : MonoBehaviour
     private void RecieveBlowOffForce(Vector3 _leverage)
     {
         mBlowOffSpeed = mFistBlowOffSpeed;
-        float x = transform.position.x - _leverage.x * mBlowOffSpeed * Time.deltaTime;
-        float z = transform.position.z - _leverage.z * mBlowOffSpeed * Time.deltaTime;
-        mBlowOffForce.Set(x, 0, z) ;
+        mBlowOffX = transform.position.x - _leverage.x * Time.deltaTime * mBlowOffSpeed;
+        mBlowOffZ = transform.position.z - _leverage.z * Time.deltaTime * mBlowOffSpeed;
+
+        mBlowOffForce.Set(mBlowOffX, 0, mBlowOffZ) ;
         
     }
     //吹っ飛ぶ
     private void BlowOff()
     {
         mRigidbody.AddForce(mBlowOffForce,ForceMode.Impulse);
-        mBlowOffSpeed *= mBlowOffD;
-        if (mBlowOffSpeed < 0) 
+
+            Debug.Log(mBlowOffX);
+        if (Mathf.Abs(mBlowOffX) <= 1)
         {
-            Debug.Log(mBlowOffSpeed);
-            mBlowOffSpeed = 0;
+            mBlowOffX = 0;   
+
         }
-        if(mBlowOffSpeed>mMaxBlowOffSpeed)
+        if (Mathf.Abs(mBlowOffZ) <= 1)
         {
-            mBlowOffSpeed = mMaxBlowOffSpeed;
+            mBlowOffZ = 0;
         }
-        float x = mBlowOffForce.x * mBlowOffSpeed * Time.deltaTime;
-        float z = mBlowOffForce.z * mBlowOffSpeed * Time.deltaTime;
-        Debug.DrawRay(transform.position, mBlowOffForce,Color.white);
-        mBlowOffForce.Set(x, 0, z ) ;
+
+        mBlowOffX *= mBlowOffD;
+        mBlowOffZ *= mBlowOffD;
+
+        mBlowOffForce.Set(mBlowOffX, 0, mBlowOffZ) ;
         
     }
     private void Start()
@@ -84,7 +88,7 @@ public class Egg : MonoBehaviour
             if (x < mBreakAllowableLimit && z < mBreakAllowableLimit &&
                 !mIsClacked) //ど真ん中にプレイヤーが落ちたら
             {
-                Clack();
+                //Clack();
             }
             {
                 PlayerStateEnum.PlayerState playerState = collision.gameObject.GetComponent<Player>().mPlayerState;
@@ -100,5 +104,6 @@ public class Egg : MonoBehaviour
     {
 
         BlowOff();
+        
     }
 }
