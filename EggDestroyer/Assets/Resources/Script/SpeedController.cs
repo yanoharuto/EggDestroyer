@@ -15,6 +15,7 @@ public class SpeedController : MonoBehaviour
         if (mSpeed > 1)
         {
             mSpeed *= mSpeedD;//減速
+            
         }
         else
         {
@@ -38,18 +39,31 @@ public class SpeedController : MonoBehaviour
     public void InitSpeed()
     {
         mSpeed = mFirstSpeed;
+      
     }
+    /// <summary>
+    /// 引数を参照してスピードを返すよ
+    /// </summary>
+    /// <param name="_speed">これが0だとこの数が返ってくる</param>
+    /// <returns>0より大きいと正数で逆だと負の数でスピードが返る</returns>
     public float ReflectSpeed(float _speed)
     {
-        if (_speed > 0)
+        float speed = mSpeed;
+        if (_speed < 0)
         {
-            _speed = mSpeed;
+            speed = -mSpeed;
         }
-        else if (_speed < 0)
+        else if (_speed == 0)
         {
-            _speed = -mSpeed;
-            
+            speed = _speed;
         }
-        return _speed;
+        return speed;
+    }
+
+    public bool IsSpeedInited()
+    {
+        if (mSpeed == 0) return true; 
+        
+        return false;
     }
 }

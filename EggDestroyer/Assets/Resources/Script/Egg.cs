@@ -41,16 +41,16 @@ public class Egg : MonoBehaviour
     {
         mBlowOffSpeedX = _mMoveSpeedController.ReflectSpeed(mRigidbody.velocity.x) * Time.deltaTime;//速さをもらってくる
         mBlowOffSpeedZ = _mMoveSpeedController.ReflectSpeed(mRigidbody.velocity.z) * Time.deltaTime;
-        Debug.Log(mBlowOffSpeedX);
+
         mBlowOffForce.Set(mBlowOffSpeedX, 0, mBlowOffSpeedZ);
-        Debug.Log(mBlowOffForce);
+        
 
     }
     //吹っ飛ぶ
     private void BlowOff()
     {
         mRigidbody.AddForce(mBlowOffForce, ForceMode.Impulse);//吹っ飛ぶ
-        Debug.DrawRay(transform.position, mBlowOffForce, Color.white);
+        
         _mMoveSpeedController.DecreaseAcceleration();//減速
 
         mBlowOffSpeedX = _mMoveSpeedController.ReflectSpeed(mBlowOffSpeedX);//減速した速さをもらってくる

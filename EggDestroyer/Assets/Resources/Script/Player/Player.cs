@@ -4,82 +4,45 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private float mFirstRiseSpeed;//初期上昇速度
-    [SerializeField, Range(0.6f, 0.99f)] private float mRiseD;//上昇減速量
+    [SerializeField] private SpeedController _mRiseSpeedController;
 
-    [SerializeField] private float mFirstMoveSpeed;//初期移動速度
-    [SerializeField] private float mMaxMoveSpeed;//最高移動速度
-    [SerializeField, Range(1.0f, 1.99f)] private float mMoveA;//移動加速度
-    [SerializeField,Range(0.6f,0.99f)] private float mMoveD;//移動減速量
+    [SerializeField]private SpeedController _mMoveSpeedController;
 
-    private float mNowRiseA;//上昇加速度
-    private float mNowMoveA;//移動加速度
-    private float mMoveX;
-    private float mMoveZ;
-    private bool mIsKeepRise;//上昇し続ける？
+    private float mNowRiseSpeed;//上昇加速度
+    private float mMoveSpeedX;
+    private float mMoveSpeedZ;
+    private string mInputName;
     private Rigidbody mRigidbody;
     public PlayerStateEnum.PlayerState mPlayerState;
-    private string mInputName;
+
     /// 上昇
-    private float Rise()
+    private void Rise()
     {
+
+ 
         mPlayerState = PlayerStateEnum.PlayerState.rise;
-        mNowRiseA *= mRiseD;//適当減速
-        return mNowRiseA;
+        mNowRiseSpeed = _mRiseSpeedController.DecreaseAcceleration(); //適当減速
+
     }
-    /// <summary>
-    /// 減速する
-    /// </summary>
-    /// <param name="_speed"></param>
-    /// <returns></returns>
-    private float Deceleration(float _speed)
-    {
-        if (mNowMoveA > 0)
-        {
-            mNowMoveA *= mMoveD;//減速
-        }
-        else
-        {
-            mNowMoveA = 0;
-        }
-        if (_speed > 0)
-        {
-            _speed = mNowMoveA;
-        }
-        else if (_speed < 0)
-        {
-            _speed = -mNowMoveA;
-        }
-        return _speed;
-    }
-    private void acceleration()
-    {
-        if (mNowMoveA < mMaxMoveSpeed)//最高速度？
-        {
-            mNowMoveA *= mMoveA;
-        }
-        else
-        {
-            mNowMoveA = mMaxMoveSpeed;
-        }
-    }
-    private string InputKey(string _InputName)
-    {
-        if (Input.GetKey(KeyCode.DownArrow))
+   
+    private string InputKey()
+    { 
+        string _InputName;
+        if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             _InputName = KeyCode.DownArrow.ToString();
         }
-        else if (Input.GetKey(KeyCode.UpArrow))
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             _InputName = KeyCode.UpArrow.ToString();
             
         }
-        else if (Input.GetKey(KeyCode.LeftArrow))
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             _InputName = KeyCode.LeftArrow.ToString();
             
         }
-        else if (Input.GetKey(KeyCode.RightArrow))
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             _InputName = KeyCode.RightArrow.ToString();
             
@@ -93,47 +56,49 @@ public class Player : MonoBehaviour
     //移動
     private void Move()
     {
-        string NowInputName = null;
-        NowInputName = InputKey(NowInputName);
-        float y = 0;
+        string NowInputName = InputKey();
         Vector3 mMoveVel;
-        if (mNowMoveA <= mFirstMoveSpeed  && NowInputName != null)
-        {
-
-            mInputName = NowInputName;
-            
-        }
-        if (NowInputName == mInputName && mPlayerState == PlayerStateEnum.PlayerState.rise)
-        {
-            acceleration();
-            mMoveX = Input.GetAxis("Horizontal") * mNowMoveA;
-            mMoveZ = Input.GetAxis("Vertical") * mNowMoveA;
-        }
-        else
-        {
-            mMoveX = Deceleration(mMoveX);
-            mMoveZ = Deceleration(mMoveZ);
-        }
-
+        Debug.Log(NowInputName);
         if (mPlayerState == PlayerStateEnum.PlayerState.rise)
         {
-            y = Rise();
+            Rise();
+            if (NowInputName == mInputName ||//上昇中で入力し続けているなら
+                mInputName == null)//最初の一回
+            {
+                _mMoveSpeedController.AddAcceleration();
+                mMoveSpeedX = _mMoveSpeedController.ReflectSpeed(Input.GetAxis("Horizontal"));
+                mMoveSpeedZ = _mMoveSpeedController.ReflectSpeed(Input.GetAxis("Vertical"));
+                mInputName = NowInputName;
+            }
         }
-
-        mMoveVel = new Vector3(mMoveX, y, mMoveZ);
-
+        if (NowInputName == null || NowInputName != mInputName)
+        {
+            if (_mMoveSpeedController.IsSpeedInited())
+            {
+                
+                _mMoveSpeedController.InitSpeed();
+                mInputName = NowInputName;
+            }
+            else
+            {
+                _mMoveSpeedController.DecreaseAcceleration();
+                mMoveSpeedX = _mMoveSpeedController.ReflectSpeed(mMoveSpeedX);
+                mMoveSpeedZ = _mMoveSpeedController.ReflectSpeed(mMoveSpeedZ);
+            }
+        }
+        mMoveVel = new Vector3(mMoveSpeedX, mNowRiseSpeed, mMoveSpeedZ);
         transform.position += mMoveVel * Time.deltaTime;
     }
     //発射準備
     private void PrepareRise()
     {
         mPlayerState = PlayerStateEnum.PlayerState.Idol;//発射準備状態
-        mNowRiseA = mFirstRiseSpeed;//加速度を元に戻す
-        mNowMoveA = mFirstMoveSpeed;
-        mMoveX = 0;
-        mMoveZ = 0;
+        _mMoveSpeedController.InitSpeed();//加速度を元に戻す
+        _mRiseSpeedController.InitSpeed();
+        mMoveSpeedX = 0;
+        mMoveSpeedZ = 0;
+        mNowRiseSpeed = 0;
         mInputName = null;
-       
     }
     private void Start()
     {
@@ -146,21 +111,20 @@ public class Player : MonoBehaviour
         if (!(mPlayerState == PlayerStateEnum.PlayerState.Descent)) //下降以外なら
         {
             if (Input.GetKey(KeyCode.Space))
-            {
-                Move();
+            {            
                 mPlayerState = PlayerStateEnum.PlayerState.rise;
-                mIsKeepRise = true;
+                Move();
                 mRigidbody.useGravity = false;
             }
-            else if (mIsKeepRise == true)//スペースキーを離したら落下
+            else if (mPlayerState==PlayerStateEnum.PlayerState.rise)//スペースキーを離したら落下
             {
                 mPlayerState = PlayerStateEnum.PlayerState.Descent;
-                mIsKeepRise = false;
                 mRigidbody.useGravity = true;
             }
         }
         else
         {
+
             //下降中でも減速しながら移動
             Move();
         }
@@ -169,6 +133,7 @@ public class Player : MonoBehaviour
     {
         if(_collision.gameObject.CompareTag("Ground"))
         {
+            
             PrepareRise();
         }
     }
