@@ -17,9 +17,8 @@ public class Player : MonoBehaviour
     private float mMoveX;
     private float mMoveZ;
     private bool mIsKeepRise;//上昇し続ける？
-    private bool mIsInput;//動いてる？
     private Rigidbody mRigidbody;
-    private PlayerStateEnum.PlayerState mPlayerState;
+    public PlayerStateEnum.PlayerState mPlayerState;
     private string mInputName;
     /// 上昇
     private float Rise()
@@ -35,7 +34,7 @@ public class Player : MonoBehaviour
     /// <returns></returns>
     private float Deceleration(float _speed)
     {
-        if (mNowMoveA > 0)//最初の速さより大きい？
+        if (mNowMoveA > 0)
         {
             mNowMoveA *= mMoveD;//減速
         }
@@ -134,7 +133,7 @@ public class Player : MonoBehaviour
         mMoveX = 0;
         mMoveZ = 0;
         mInputName = null;
-        mIsInput = false;
+       
     }
     private void Start()
     {

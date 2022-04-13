@@ -766,7 +766,7 @@ Transform:
   m_LocalScale: {x: 2000, y: 1, z: 2000}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &1331322091
 Rigidbody:
@@ -839,15 +839,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 40225513906058318, guid: 59e0650dc55af854280b38ecdfde0391, type: 3}
       propertyPath: mFirstRiseSpeed
-      value: 30
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 40225513906058319, guid: 59e0650dc55af854280b38ecdfde0391, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 40225513906058319, guid: 59e0650dc55af854280b38ecdfde0391, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5
+      value: 2.6
       objectReference: {fileID: 0}
     - target: {fileID: 40225513906058319, guid: 59e0650dc55af854280b38ecdfde0391, type: 3}
       propertyPath: m_LocalPosition.y
@@ -895,8 +895,28 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 64207766829577121, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
+      propertyPath: m_Drag
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 64207766829577121, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 64207766829577121, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 64207766829577121, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
       propertyPath: m_AngularDrag
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 64207766829577121, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
+      propertyPath: m_IsKinematic
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 64207766829577122, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
+      propertyPath: m_Material
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 64207766829577123, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
       propertyPath: m_Name
@@ -920,7 +940,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 64207766829577149, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.06
       objectReference: {fileID: 0}
     - target: {fileID: 64207766829577149, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
       propertyPath: m_LocalRotation.w
@@ -951,16 +971,28 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 64207766829577150, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
+      propertyPath: mBlowOffD
+      value: 0.999
+      objectReference: {fileID: 0}
+    - target: {fileID: 64207766829577150, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
       propertyPath: mBlowOffSpeed
-      value: 5000
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 64207766829577150, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
       propertyPath: mClackedLayer
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 64207766829577150, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
+      propertyPath: mMaxBlowOffSpeed
+      value: 110
+      objectReference: {fileID: 0}
+    - target: {fileID: 64207766829577150, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
+      propertyPath: mFistBlowOffSpeed
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 64207766829577150, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
       propertyPath: mBreakAllowableLimit
-      value: 0.6
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 64207766829577150, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
       propertyPath: mBeforeBreakAudio.Array.size
