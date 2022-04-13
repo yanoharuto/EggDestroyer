@@ -6,17 +6,14 @@ public class Egg : MonoBehaviour
 {
     [SerializeField] private List<AudioClip> mBeforeBreakAudio = new List<AudioClip>();
     [SerializeField] private float mBreakAllowableLimit;
-    [SerializeField] private float mFistBlowOffSpeed;
-    [SerializeField] private float mMaxBlowOffSpeed;
-    [SerializeField,Range(0.6f,1.0f)] private float mBlowOffD;//減速量
     [SerializeField] private int mClackedLayer;//割れた後のレイヤーの番号
 
     private AudioSource mAudioSource;
     private AudioClip mBllowOffAudio;
     private Rigidbody mRigidbody;
     private bool mIsClacked;
-    private float mBlowOffSpeed;
-    private float mBlowOffX, mBlowOffZ;
+    private SpeedController _mMoveSpeedController;
+    private float mBlowOffSpeedX, mBlowOffSpeedZ;
     [SerializeField]private Vector3 mBlowOffForce;
     /// <summary>
     /// 音を鳴らします
@@ -26,11 +23,13 @@ public class Egg : MonoBehaviour
     {
         mAudioSource.PlayOneShot(_audioClip);   
     }
-    //割れるよ
+    /// <summary>
+    /// 卵が割れ動かなくなる
+    /// </summary>
     private void Clack()
     {
         mRigidbody.isKinematic = true;
-        foreach (AudioClip audioClip in mBeforeBreakAudio)
+        foreach (AudioClip audioClip in mBeforeBreakAudio)//割れた音
         {
             AudioPlay(audioClip);
         }
@@ -38,35 +37,25 @@ public class Egg : MonoBehaviour
         gameObject.layer = mClackedLayer;
     }
     //吹っ飛ぶ力を決める
-    private void RecieveBlowOffForce(Vector3 _leverage)
+    private void SetBlowOffForce()
     {
-        mBlowOffSpeed = mFistBlowOffSpeed;
-        mBlowOffX = transform.position.x - _leverage.x * Time.deltaTime * mBlowOffSpeed;
-        mBlowOffZ = transform.position.z - _leverage.z * Time.deltaTime * mBlowOffSpeed;
+        mBlowOffSpeedX = _mMoveSpeedController.ReflectSpeed(mRigidbody.velocity.x) * Time.deltaTime;//速さをもらってくる
+        mBlowOffSpeedZ = _mMoveSpeedController.ReflectSpeed(mRigidbody.velocity.z) * Time.deltaTime;
+        Debug.Log(mBlowOffSpeedX);
+        mBlowOffForce.Set(mBlowOffSpeedX, 0, mBlowOffSpeedZ);
+        Debug.Log(mBlowOffForce);
 
-        mBlowOffForce.Set(mBlowOffX, 0, mBlowOffZ) ;
-        
     }
     //吹っ飛ぶ
     private void BlowOff()
     {
-        mRigidbody.AddForce(mBlowOffForce,ForceMode.Impulse);
+        mRigidbody.AddForce(mBlowOffForce, ForceMode.Impulse);//吹っ飛ぶ
+        Debug.DrawRay(transform.position, mBlowOffForce, Color.white);
+        _mMoveSpeedController.DecreaseAcceleration();//減速
 
-            Debug.Log(mBlowOffX);
-        if (Mathf.Abs(mBlowOffX) <= 1)
-        {
-            mBlowOffX = 0;   
-
-        }
-        if (Mathf.Abs(mBlowOffZ) <= 1)
-        {
-            mBlowOffZ = 0;
-        }
-
-        mBlowOffX *= mBlowOffD;
-        mBlowOffZ *= mBlowOffD;
-
-        mBlowOffForce.Set(mBlowOffX, 0, mBlowOffZ) ;
+        mBlowOffSpeedX = _mMoveSpeedController.ReflectSpeed(mBlowOffSpeedX);//減速した速さをもらってくる
+        mBlowOffSpeedZ = _mMoveSpeedController.ReflectSpeed(mBlowOffSpeedZ);
+        mBlowOffForce.Set(mBlowOffSpeedX, 0, mBlowOffSpeedZ) ;
         
     }
     private void Start()
@@ -76,7 +65,10 @@ public class Egg : MonoBehaviour
         mIsClacked = false;
         mBlowOffForce = new Vector3(0, 0, 0);
         mBllowOffAudio = (AudioClip)Resources.Load("Audio/Paper");
-        mBlowOffSpeed = 0;
+        _mMoveSpeedController = GetComponent<SpeedController>();
+        _mMoveSpeedController.InitSpeed();//速さを初期化
+        mBlowOffSpeedZ = 0;
+        mBlowOffSpeedX = 0;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -88,22 +80,21 @@ public class Egg : MonoBehaviour
             if (x < mBreakAllowableLimit && z < mBreakAllowableLimit &&
                 !mIsClacked) //ど真ん中にプレイヤーが落ちたら
             {
-                //Clack();
+                Clack();
             }
             {
                 PlayerStateEnum.PlayerState playerState = collision.gameObject.GetComponent<Player>().mPlayerState;
                 if (playerState == PlayerStateEnum.PlayerState.Descent)//落下中なら
                 {
-                    AudioPlay(mBllowOffAudio);   
-                    RecieveBlowOffForce(collision.transform.position);
+                    AudioPlay(mBllowOffAudio);   //ぶつかった時の音
+                    _mMoveSpeedController.InitSpeed();//速度を初期化
                 }
             }
         }
     }
     private void Update()
     {
-
+        SetBlowOffForce();//吹っ飛ぶ力を設定
         BlowOff();
-        
     }
 }

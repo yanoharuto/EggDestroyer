@@ -1099,5 +1099,13 @@ PrefabInstance:
       propertyPath: mBeforeBreakAudio.Array.data[2]
       value: 
       objectReference: {fileID: 8300000, guid: b2ecabf713dfef7429e52463b69e8cda, type: 3}
+    - target: {fileID: 7132048271076662433, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
+      propertyPath: mMaxSpeed
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132048271076662433, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
+      propertyPath: mFirstSpeed
+      value: 500
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6b1dfacb24e516444920efab21c1d990, type: 3}
