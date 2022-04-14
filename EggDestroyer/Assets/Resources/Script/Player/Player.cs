@@ -22,7 +22,32 @@ public class Player : MonoBehaviour
         mNowRiseSpeed = _mRiseSpeedController.DecreaseAcceleration(); //適当減速
 
     }
-   
+   private void Rotate(string _nowInput)
+    {
+        Vector3 vector3 = transform.position;
+        if(KeyCode.DownArrow.ToString()==_nowInput)
+        {
+            vector3 -= transform.forward;
+            transform.LookAt(vector3);
+        }
+        else if (KeyCode.UpArrow.ToString() == _nowInput)
+        {
+            vector3 += transform.forward;
+            transform.LookAt(vector3);
+        }
+        else if (KeyCode.RightArrow.ToString() == _nowInput)
+        {
+            vector3 += transform.right;
+            transform.LookAt(vector3);
+        }
+        else if (KeyCode.LeftArrow.ToString() == _nowInput)
+        {
+            vector3 -= transform.right;
+            transform.LookAt(vector3);
+        }
+
+
+    }
     private string InputKey()
     { 
         string _InputName;
@@ -51,11 +76,12 @@ public class Player : MonoBehaviour
         }
         return _InputName;
     }
+
     //移動
     private void Move()
     {
         string NowInputName = InputKey();
-        Vector3 mMoveVel;
+        Vector3 MoveVel;
 
         if (mPlayerState == PlayerStateEnum.PlayerState.rise)
         {
@@ -63,6 +89,7 @@ public class Player : MonoBehaviour
             if (NowInputName == mInputName )//上昇中で同じ方向に入力し続けているなら
             {
                 _mMoveSpeedController.AddAcceleration();//加速
+                //斜めには進まない
                 if (mInputName == KeyCode.LeftArrow.ToString() || mInputName == KeyCode.RightArrow.ToString())
                 {
                     mMoveSpeedX = _mMoveSpeedController.ReflectSpeed(Input.GetAxis("Horizontal"));
@@ -78,19 +105,19 @@ public class Player : MonoBehaviour
             if (_mMoveSpeedController.IsDecelerationComlieted())//完全に減速し終えたら
             {
                 _mMoveSpeedController.InitSpeed();//スピードを元に戻して
+                
                 mInputName = NowInputName;//進みたい方向を更新
             }
             else
             {
-                Debug.Log(NowInputName);
-                Debug.Log(mInputName);
+                Rotate(NowInputName);
                 _mMoveSpeedController.DecreaseAcceleration();//減速
                 mMoveSpeedX = _mMoveSpeedController.ReflectSpeed(mMoveSpeedX);
                 mMoveSpeedZ = _mMoveSpeedController.ReflectSpeed(mMoveSpeedZ);
             }
         }
-        mMoveVel = new Vector3(mMoveSpeedX, mNowRiseSpeed, mMoveSpeedZ);
-        transform.position += mMoveVel * Time.deltaTime;
+        MoveVel = new Vector3(mMoveSpeedX, mNowRiseSpeed, mMoveSpeedZ);
+        transform.position += MoveVel * Time.deltaTime;
     }
     //発射準備
     private void PrepareRise()
@@ -117,6 +144,7 @@ public class Player : MonoBehaviour
             {            
                 mPlayerState = PlayerStateEnum.PlayerState.rise;
                 Move();
+              
                 mRigidbody.useGravity = false;
             }
             else if (mPlayerState==PlayerStateEnum.PlayerState.rise)//スペースキーを離したら落下
@@ -127,7 +155,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-
+ 
             //下降中でも減速しながら移動
             Move();
         }
