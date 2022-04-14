@@ -62,8 +62,13 @@ public class SpeedController : MonoBehaviour
 
     public bool IsSpeedInited()
     {
-        if (mSpeed == 0) return true; 
+        if (mSpeed == mFirstSpeed) return true; 
         
+        return false;
+    }
+    public bool IsDecelerationComlieted()
+    {
+        if (mSpeed == 0) return true;
         return false;
     }
 }

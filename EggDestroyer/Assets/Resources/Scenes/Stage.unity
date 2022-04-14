@@ -944,6 +944,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: player
       objectReference: {fileID: 0}
+    - target: {fileID: 40225513906058309, guid: 59e0650dc55af854280b38ecdfde0391, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 40225513906058318, guid: 59e0650dc55af854280b38ecdfde0391, type: 3}
       propertyPath: mMoveA
       value: 1.05
@@ -1007,6 +1011,18 @@ PrefabInstance:
     - target: {fileID: 40225513906058319, guid: 59e0650dc55af854280b38ecdfde0391, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2442728947865157111, guid: 59e0650dc55af854280b38ecdfde0391, type: 3}
+      propertyPath: mSpeedD
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2442728947865157111, guid: 59e0650dc55af854280b38ecdfde0391, type: 3}
+      propertyPath: mMaxSpeed
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2442728947865157111, guid: 59e0650dc55af854280b38ecdfde0391, type: 3}
+      propertyPath: mFirstSpeed
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9101591776692512998, guid: 59e0650dc55af854280b38ecdfde0391, type: 3}
       propertyPath: mSpeedA

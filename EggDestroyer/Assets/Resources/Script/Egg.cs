@@ -39,9 +39,15 @@ public class Egg : MonoBehaviour
     //吹っ飛ぶ力を決める
     private void SetBlowOffForce()
     {
-        mBlowOffSpeedX = _mMoveSpeedController.ReflectSpeed(mRigidbody.velocity.x) * Time.deltaTime;//速さをもらってくる
-        mBlowOffSpeedZ = _mMoveSpeedController.ReflectSpeed(mRigidbody.velocity.z) * Time.deltaTime;
-
+        if (mBlowOffSpeedX != 0)
+        {
+            mBlowOffSpeedX = _mMoveSpeedController.ReflectSpeed(mRigidbody.velocity.x) * Time.deltaTime;//速さをもらってくる
+        }
+        if (mBlowOffSpeedZ != 0)
+        {
+            mBlowOffSpeedZ = _mMoveSpeedController.ReflectSpeed(mRigidbody.velocity.z) * Time.deltaTime;
+        }
+        
         mBlowOffForce.Set(mBlowOffSpeedX, 0, mBlowOffSpeedZ);
         
 
@@ -52,9 +58,14 @@ public class Egg : MonoBehaviour
         mRigidbody.AddForce(mBlowOffForce, ForceMode.Impulse);//吹っ飛ぶ
         
         _mMoveSpeedController.DecreaseAcceleration();//減速
-
-        mBlowOffSpeedX = _mMoveSpeedController.ReflectSpeed(mBlowOffSpeedX);//減速した速さをもらってくる
-        mBlowOffSpeedZ = _mMoveSpeedController.ReflectSpeed(mBlowOffSpeedZ);
+        if (mBlowOffSpeedX != 0)
+        {
+            mBlowOffSpeedX = _mMoveSpeedController.ReflectSpeed(mBlowOffSpeedX);//減速した速さをもらってくる
+        }
+        if (mBlowOffSpeedZ != 0)
+        {
+            mBlowOffSpeedZ = _mMoveSpeedController.ReflectSpeed(mBlowOffSpeedZ);
+        }
         mBlowOffForce.Set(mBlowOffSpeedX, 0, mBlowOffSpeedZ) ;
         
     }

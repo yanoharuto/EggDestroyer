@@ -18,8 +18,6 @@ public class Player : MonoBehaviour
     /// 上昇
     private void Rise()
     {
-
- 
         mPlayerState = PlayerStateEnum.PlayerState.rise;
         mNowRiseSpeed = _mRiseSpeedController.DecreaseAcceleration(); //適当減速
 
@@ -28,21 +26,21 @@ public class Player : MonoBehaviour
     private string InputKey()
     { 
         string _InputName;
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        if (Input.GetKey(KeyCode.DownArrow))
         {
             _InputName = KeyCode.DownArrow.ToString();
         }
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        else if (Input.GetKey(KeyCode.UpArrow))
         {
             _InputName = KeyCode.UpArrow.ToString();
             
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (Input.GetKey(KeyCode.LeftArrow))
         {
             _InputName = KeyCode.LeftArrow.ToString();
             
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        else if (Input.GetKey(KeyCode.RightArrow))
         {
             _InputName = KeyCode.RightArrow.ToString();
             
@@ -58,30 +56,35 @@ public class Player : MonoBehaviour
     {
         string NowInputName = InputKey();
         Vector3 mMoveVel;
-        Debug.Log(NowInputName);
+
         if (mPlayerState == PlayerStateEnum.PlayerState.rise)
         {
             Rise();
-            if (NowInputName == mInputName ||//上昇中で入力し続けているなら
-                mInputName == null)//最初の一回
+            if (NowInputName == mInputName )//上昇中で同じ方向に入力し続けているなら
             {
-                _mMoveSpeedController.AddAcceleration();
-                mMoveSpeedX = _mMoveSpeedController.ReflectSpeed(Input.GetAxis("Horizontal"));
-                mMoveSpeedZ = _mMoveSpeedController.ReflectSpeed(Input.GetAxis("Vertical"));
-                mInputName = NowInputName;
+                _mMoveSpeedController.AddAcceleration();//加速
+                if (mInputName == KeyCode.LeftArrow.ToString() || mInputName == KeyCode.RightArrow.ToString())
+                {
+                    mMoveSpeedX = _mMoveSpeedController.ReflectSpeed(Input.GetAxis("Horizontal"));
+                }
+                if (mInputName == KeyCode.UpArrow.ToString() || mInputName == KeyCode.DownArrow.ToString())
+                {
+                    mMoveSpeedZ = _mMoveSpeedController.ReflectSpeed(Input.GetAxis("Vertical"));
+                }
             }
         }
-        if (NowInputName == null || NowInputName != mInputName)
+        if (NowInputName == null || NowInputName != mInputName)//何も入力してなかったり急に方向転換したなら
         {
-            if (_mMoveSpeedController.IsSpeedInited())
+            if (_mMoveSpeedController.IsDecelerationComlieted())//完全に減速し終えたら
             {
-                
-                _mMoveSpeedController.InitSpeed();
-                mInputName = NowInputName;
+                _mMoveSpeedController.InitSpeed();//スピードを元に戻して
+                mInputName = NowInputName;//進みたい方向を更新
             }
             else
             {
-                _mMoveSpeedController.DecreaseAcceleration();
+                Debug.Log(NowInputName);
+                Debug.Log(mInputName);
+                _mMoveSpeedController.DecreaseAcceleration();//減速
                 mMoveSpeedX = _mMoveSpeedController.ReflectSpeed(mMoveSpeedX);
                 mMoveSpeedZ = _mMoveSpeedController.ReflectSpeed(mMoveSpeedZ);
             }
