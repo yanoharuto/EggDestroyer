@@ -69,12 +69,12 @@ public class SpeedController : MonoBehaviour
         return speed;
     }
     /// <summary>
-    /// 最初の速度に戻しているか
+    /// 最初の速度より遅い？
     /// </summary>
     /// <returns></returns>
-    public bool IsSpeedInited()
+    public bool IsBlowFirstSpeed()
     {
-        if (mSpeed == mFirstSpeed) return true; 
+        if (mSpeed <= mFirstSpeed) return true; 
         
         return false;
     }

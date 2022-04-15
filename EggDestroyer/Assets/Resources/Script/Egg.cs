@@ -47,21 +47,18 @@ public class Egg : MonoBehaviour
 
 
         mBlowOffForce.Set(mBlowOffSpeedX, 0, mBlowOffSpeedZ);
-        Debug.Log(mRigidbody.velocity);
-
     }
     //吹っ飛ぶ
     private void BlowOff()
     {
 
-        if (_mMoveSpeedController.IsSpeedInited())
+        if (_mMoveSpeedController.IsDecelerationComlieted())
         {
-            mRigidbody.AddForce(mBlowOffForce, ForceMode.Impulse);//吹っ飛ぶ
+            mRigidbody.AddForce(mBlowOffForce, ForceMode.Force);//吹っ飛ぶ
             _mMoveSpeedController.DecreaseAcceleration();//減速
             mBlowOffSpeedX = _mMoveSpeedController.ReflectSpeed(mBlowOffSpeedX);//減速した速さをもらってくる
             mBlowOffSpeedZ = _mMoveSpeedController.ReflectSpeed(mBlowOffSpeedZ);
             mBlowOffForce.Set(mBlowOffSpeedX, 0, mBlowOffSpeedZ);
-
         }       
         else
         {
@@ -97,7 +94,7 @@ public class Egg : MonoBehaviour
                 PlayerStateEnum.PlayerState playerState = collision.gameObject.GetComponent<Player>().mPlayerState;
                 if (playerState == PlayerStateEnum.PlayerState.Descent)//落下中なら
                 {
-
+                    SetBlowOffForce();//吹っ飛ぶ力を設定
                     mBllowOff = true;
                     AudioPlay(mBllowOffAudio);   //ぶつかった時の音
                     _mMoveSpeedController.InitSpeed();//速度を初期化
@@ -109,8 +106,8 @@ public class Egg : MonoBehaviour
     {
         if (mBllowOff)
         {
-            SetBlowOffForce();//吹っ飛ぶ力を設定
             BlowOff();
         }
+
     }
 }
