@@ -9,7 +9,10 @@ public class SpeedController : MonoBehaviour
     [SerializeField,Range(0.0f,1.0f)] private float mSpeedD;//減速量
     [SerializeField,Range(1.0f,1000.0f)] private float mSpeedA;
     private float mSpeed;
-    ///
+    /// <summary>
+    /// 減速
+    /// </summary>
+    /// <returns></returns>
     public float DecreaseAcceleration()
     {
         if (mSpeed > 1)
@@ -23,6 +26,10 @@ public class SpeedController : MonoBehaviour
         }
         return mSpeed;
     }
+    /// <summary>
+    /// 加速
+    /// </summary>
+    /// <returns></returns>
     public float AddAcceleration()
     {
         if (mSpeed < mMaxSpeed)//最高速度？
@@ -35,7 +42,9 @@ public class SpeedController : MonoBehaviour
         }
         return mSpeed;
     }
-
+    /// <summary>
+    /// 初期速度にする
+    /// </summary>
     public void InitSpeed()
     {
         mSpeed = mFirstSpeed;
@@ -59,13 +68,20 @@ public class SpeedController : MonoBehaviour
         }
         return speed;
     }
-
+    /// <summary>
+    /// 最初の速度に戻しているか
+    /// </summary>
+    /// <returns></returns>
     public bool IsSpeedInited()
     {
         if (mSpeed == mFirstSpeed) return true; 
         
         return false;
     }
+    /// <summary>
+    /// 減速完了
+    /// </summary>
+    /// <returns></returns>
     public bool IsDecelerationComlieted()
     {
         if (mSpeed == 0) return true;
