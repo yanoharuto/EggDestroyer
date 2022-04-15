@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] private SpeedController _mRiseSpeedController;
-
+    [SerializeField] private float mRotateYSpeed;
     [SerializeField]private SpeedController _mMoveSpeedController;
 
     private float mNowRiseSpeed;//上昇加速度
@@ -14,7 +14,9 @@ public class Player : MonoBehaviour
     private string mInputName;
     private Rigidbody mRigidbody;
     public PlayerStateEnum.PlayerState mPlayerState;
-
+    private float mDirection;
+    private float mEulerAngleY;
+    private bool mIsRotate;
     /// 上昇
     private void Rise()
     {
@@ -22,31 +24,46 @@ public class Player : MonoBehaviour
         mNowRiseSpeed = _mRiseSpeedController.DecreaseAcceleration(); //適当減速
 
     }
-   private void Rotate(string _nowInput)
+   private void Rotate(string _nowInputName)
     {
-        Vector3 vector3 = transform.position;
-        if(KeyCode.DownArrow.ToString()==_nowInput)
+        Vector3 Rotate;
+        float RotateY = mRotateYSpeed;
+        if (_nowInputName == KeyCode.UpArrow.ToString())
         {
-            vector3 -= transform.forward;
-            transform.LookAt(vector3);
+            mDirection = 0;
         }
-        else if (KeyCode.UpArrow.ToString() == _nowInput)
+        else if (_nowInputName == KeyCode.DownArrow.ToString())
         {
-            vector3 += transform.forward;
-            transform.LookAt(vector3);
+            mDirection = 180;
         }
-        else if (KeyCode.RightArrow.ToString() == _nowInput)
+        else if (_nowInputName == KeyCode.LeftArrow.ToString())
         {
-            vector3 += transform.right;
-            transform.LookAt(vector3);
+            mDirection = 270;
+            
         }
-        else if (KeyCode.LeftArrow.ToString() == _nowInput)
+        else if(_nowInputName==KeyCode.RightArrow.ToString())
         {
-            vector3 -= transform.right;
-            transform.LookAt(vector3);
+            mDirection = 90;
         }
-
-
+        if (mDirection + mRotateYSpeed >= transform.rotation.eulerAngles.y &&
+            mDirection - mRotateYSpeed <= transform.rotation.eulerAngles.y)
+        {
+            mIsRotate = false;
+        }
+        else if (mDirection == 270 && mEulerAngleY < 45)
+        {
+            RotateY = -mRotateYSpeed;
+        }
+        else if(mDirection==0&&mEulerAngleY>225)
+        {
+            RotateY = mRotateYSpeed;
+        }
+        else if (mDirection < mEulerAngleY)
+        {
+            RotateY = -mRotateYSpeed;
+        }
+        Rotate = new Vector3(0, RotateY, 0);
+        transform.Rotate(Rotate);
     }
     private string InputKey()
     { 
@@ -83,10 +100,14 @@ public class Player : MonoBehaviour
         string NowInputName = InputKey();
         Vector3 MoveVel;
 
+        if (mIsRotate)
+        {
+            Rotate(mInputName);
+        }
         if (mPlayerState == PlayerStateEnum.PlayerState.rise)
         {
             Rise();
-            if (NowInputName == mInputName )//上昇中で同じ方向に入力し続けているなら
+            if (NowInputName == mInputName && mIsRotate == false)//上昇中で同じ方向に入力し続けているなら
             {
                 _mMoveSpeedController.AddAcceleration();//加速
                 //斜めには進まない
@@ -102,21 +123,23 @@ public class Player : MonoBehaviour
         }
         if (NowInputName == null || NowInputName != mInputName)//何も入力してなかったり急に方向転換したなら
         {
-            if (_mMoveSpeedController.IsDecelerationComlieted())//完全に減速し終えたら
+            if (_mMoveSpeedController.IsDecelerationComlieted() && !mIsRotate)//完全に減速し終えたら
             {
                 _mMoveSpeedController.InitSpeed();//スピードを元に戻して
-                
+                mIsRotate = true;
                 mInputName = NowInputName;//進みたい方向を更新
+                mEulerAngleY = transform.eulerAngles.y;
             }
             else
             {
-                Rotate(NowInputName);
                 _mMoveSpeedController.DecreaseAcceleration();//減速
                 mMoveSpeedX = _mMoveSpeedController.ReflectSpeed(mMoveSpeedX);
                 mMoveSpeedZ = _mMoveSpeedController.ReflectSpeed(mMoveSpeedZ);
             }
         }
+
         MoveVel = new Vector3(mMoveSpeedX, mNowRiseSpeed, mMoveSpeedZ);
+
         transform.position += MoveVel * Time.deltaTime;
     }
     //発射準備
@@ -133,6 +156,7 @@ public class Player : MonoBehaviour
     private void Start()
     {
         PrepareRise();
+        mDirection = 0;
         mRigidbody = GetComponent<Rigidbody>();
     }
     private void Update()
